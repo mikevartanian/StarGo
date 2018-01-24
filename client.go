@@ -25,7 +25,7 @@ func main(){
    headerGetStats := 6004514745397280770
 
     //headerResetStats := 6004514745397280771
-	conn, _ := net.Dial("tcp","127.0.0.1:8000")
+	conn, _ := net.Dial("tcp","127.0.0.1:4000")
 
 	/*arr = append(arr, magicArr)
 	arr = append(arr , payloadArr)

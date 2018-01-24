@@ -1,11 +1,3 @@
-/* TODO:
-    Work on error codes
-    Add in ping, stats, and reset stats functionality
-    Add in sytax checking for invalid characters during compression
-*/
-
-
-
 package main
 
 import (  
@@ -42,6 +34,9 @@ var totalBytesSent int = 0
 
 func main(){
 	l, err := net.Listen(CONN_TYPE, CONN_HOST + ":" + CONN_PORT)
+	if err != nil{
+		fmt.Println("error starting up server")
+	}
 	defer l.Close()
 
 	for {
@@ -59,11 +54,10 @@ func main(){
 
 func handleRequest(conn net.Conn){
   buf := make([]byte, 8)
-  // Read the incoming connection into the buffer.
+  // Read the header data into the buffer
   conn.Read(buf)
   h := decodeHeader(buf)
 
-  //requestCode := h.code
 
 
   totalBytesReceived += len(buf)
@@ -71,7 +65,6 @@ func handleRequest(conn net.Conn){
 
 
   var code int
-  var messageRet []byte
   payload := make([]byte , h.payloadLength)
 if h.code == 1 && h.payloadLength == 0{
 		code , payload = ping()
@@ -88,7 +81,7 @@ if h.code == 1 && h.payloadLength == 0{
 		code , payload = compress(string(payload), int(h.payloadLength))	
 		}
 	} else {
-		code , messageRet = error()
+		code , payload = error()
 	}
   h.code = uint16(code)
   var bin_buf bytes.Buffer
